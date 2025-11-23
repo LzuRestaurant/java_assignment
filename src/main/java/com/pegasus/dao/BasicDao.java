@@ -16,7 +16,7 @@ import java.util.List;
  * @param <T> 具体的实体类类型
  */
 public abstract class BasicDao<T> {
-    private final QueryRunner queryRunner = new QueryRunner();
+    protected final QueryRunner queryRunner = new QueryRunner();
     private final Class<T> type;
 
     public BasicDao(Class<T> type) {

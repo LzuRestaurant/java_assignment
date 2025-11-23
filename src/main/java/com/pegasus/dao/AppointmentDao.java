@@ -1,8 +1,12 @@
 package com.pegasus.dao;
 
 import com.pegasus.entity.Appointment;
+import com.pegasus.utils.DBUtil;
+
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class AppointmentDao extends BasicDao<Appointment> {
     public AppointmentDao() {
@@ -30,5 +34,20 @@ public class AppointmentDao extends BasicDao<Appointment> {
          Long count = (Long) queryScalar("SELECT count(*) FROM t_appointment WHERE patient_id=? AND schedule_id=? AND status=0",
                                           patientId, scheduleId);
          return count > 0;
+    }
+
+    // 统计各科室的预约数量
+    public List<Map<String, Object>> countByDepartment() {
+        String sql = "SELECT d.department AS deptName, COUNT(a.id) AS count " +
+                     "FROM t_appointment a " +
+                     "JOIN t_schedule s ON a.schedule_id = s.id " +
+                     "JOIN t_doctor d ON s.doctor_id = d.id " +
+                     "GROUP BY d.department";
+        // MapListHandler 将每行结果转为一个 Map
+        try {
+            return queryRunner.query(DBUtil.getConnection(), sql, new org.apache.commons.dbutils.handlers.MapListHandler());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
