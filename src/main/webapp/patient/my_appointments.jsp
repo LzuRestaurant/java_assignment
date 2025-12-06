@@ -40,7 +40,6 @@
                                         <%-- 情况1：预约成功 (status=0) --%>
                                             <c:when test="${a.status == 0}">
                                                 <span class="badge bg-success">预约成功</span>
-                                                <!-- 直接在这里放取消按钮，逻辑更顺畅 -->
                                                 <a href="patient?action=cancelAppointment&id=${a.id}"
                                                     class="btn btn-sm btn-outline-danger ms-2"
                                                     style="padding: 0px 5px; font-size: 12px;"

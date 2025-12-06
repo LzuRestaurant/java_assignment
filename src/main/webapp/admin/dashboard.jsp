@@ -45,7 +45,7 @@
                             <div class="card text-white bg-primary mb-3">
                                 <div class="card-header">总患者数</div>
                                 <div class="card-body">
-                                    <!-- 使用 EL 表达式 -->
+                                    <!-- 使用 EL -->
                                     <h5 class="card-title">${patientCount} 人</h5>
                                 </div>
                             </div>
@@ -54,7 +54,7 @@
                             <div class="card text-white bg-success mb-3">
                                 <div class="card-header">今日预约</div>
                                 <div class="card-body">
-                                    <!-- 使用 EL 表达式 -->
+                                    <!-- 使用 EL -->
                                     <h5 class="card-title">${todayCount} 单</h5>
                                 </div>
                             </div>

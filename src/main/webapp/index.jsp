@@ -30,7 +30,6 @@
                 transform: translateX(-50%);
                 z-index: 1050;
                 display: none;
-                /* 默认隐藏 */
             }
 
             .toast-bubble {

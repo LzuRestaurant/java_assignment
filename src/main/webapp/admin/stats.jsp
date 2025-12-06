@@ -23,7 +23,7 @@
 
         </div>
         <div class="card-footer text-muted">
-            数据来源：飞马星球医院实时数据库
+            数据来源：飞马星球医院数据库
         </div>
     </div>
 

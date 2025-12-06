@@ -25,7 +25,7 @@ public class AdminServlet extends BaseServlet {
     private final AppointmentDao appointmentDao = new AppointmentDao();
     private final com.pegasus.dao.PatientDao patientDao = new com.pegasus.dao.PatientDao();
 
-    // 动作: listDoctors - 给 doctor_mgr.jsp 提供数据
+    // 给 doctor_mgr.jsp 提供数据
     public void listDoctors(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Doctor> list = doctorDao.findAll();
         req.setAttribute("doctors", list);

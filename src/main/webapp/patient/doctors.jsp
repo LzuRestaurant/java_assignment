@@ -12,7 +12,7 @@
             <div class="container mt-4">
                 <h3 class="mb-3">专家列表</h3>
 
-                <!-- 筛选区 (暂时只写个简单的链接) -->
+                <!-- 筛选区 -->
                 <div class="mb-3">
                     <a href="patient?action=listDoctors" class="btn btn-outline-primary">全部</a>
                     <a href="patient?action=listDoctors&dept=内科" class="btn btn-outline-secondary">内科</a>

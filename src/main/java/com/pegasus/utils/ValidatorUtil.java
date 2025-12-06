@@ -2,8 +2,9 @@ package com.pegasus.utils;
 
 import java.util.regex.Pattern;
 
+// 校验工具类，用于校验excel导入的数据是否合法
 public class ValidatorUtil {
-    // 预编译正则，提高性能
+    // 正则
     private static final Pattern ID_8_DIGITS = Pattern.compile("^\\d{8}$");
 
     /**

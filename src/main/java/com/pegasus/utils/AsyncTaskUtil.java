@@ -13,7 +13,7 @@ public class AsyncTaskUtil {
     public static void sendSmsNotification(String phone, String message) {
         executor.submit(() -> {
             try {
-                // 模拟耗时操作 (例如连接运营商网关)
+                // 模拟耗时操作，发送短信
                 System.out.println("正在发送短信给 " + phone + "...");
                 Thread.sleep(2000); // 睡2秒
                 System.out.println("内容: " + message);

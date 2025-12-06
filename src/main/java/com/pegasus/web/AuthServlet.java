@@ -52,7 +52,7 @@ public class AuthServlet extends BaseServlet {
     public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String idOrName = req.getParameter("id"); // 前端传来的 ID 或 用户名
         String password = req.getParameter("password");
-        String loginType = req.getParameter("loginType"); // patient / admin
+        String loginType = req.getParameter("loginType"); // patient 或 admin
 
         if ("admin".equals(loginType)) {
             // 管理员登录
