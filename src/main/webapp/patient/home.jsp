@@ -59,7 +59,7 @@
                                 <h1 class="text-info"><i class="bi bi-person-circle"></i></h1>
                                 <h5 class="card-title">个人信息</h5>
                                 <p class="card-text">查看或修改您的个人资料。</p>
-                                <a href="#" class="btn btn-info text-white">管理信息</a>
+                                <a href="${pageContext.request.contextPath}/patient?action=viewProfile" class="btn btn-info text-white">管理信息</a>
                             </div>
                         </div>
                     </div>

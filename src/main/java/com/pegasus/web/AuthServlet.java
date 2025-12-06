@@ -28,7 +28,7 @@ public class AuthServlet extends BaseServlet {
             String phone = req.getParameter("phone");
             String gender = req.getParameter("gender");
 
-            // 2. 简单校验 (防止重复注册)
+            // 2. 简单校验
             if (patientDao.countById(id) > 0) {
                 req.setAttribute("msg", "该患者ID已存在！");
                 req.getRequestDispatcher("/register.jsp").forward(req, resp);
@@ -52,7 +52,7 @@ public class AuthServlet extends BaseServlet {
     public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String idOrName = req.getParameter("id"); // 前端传来的 ID 或 用户名
         String password = req.getParameter("password");
-        String loginType = req.getParameter("loginType"); // 新增参数：patient / admin
+        String loginType = req.getParameter("loginType"); // patient / admin
 
         if ("admin".equals(loginType)) {
             // 管理员登录
@@ -60,13 +60,13 @@ public class AuthServlet extends BaseServlet {
             if (admin != null) {
                 req.getSession().setAttribute("currentUser", admin);
                 req.getSession().setAttribute("role", "admin");
-                resp.sendRedirect(req.getContextPath() + "/admin/dashboard.jsp");
+                resp.sendRedirect(req.getContextPath() + "/admin?action=dashboard");
             } else {
                 req.setAttribute("msg", "管理员账号或密码错误");
                 req.getRequestDispatcher("/index.jsp").forward(req, resp);
             }
         } else {
-            // 患者登录 (保持原有逻辑，只是加了 role)
+            // 患者登录
             try {
                 Long id = Long.parseLong(idOrName);
                 Patient patient = patientDao.selectById(id);

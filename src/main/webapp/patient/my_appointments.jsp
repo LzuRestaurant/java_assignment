@@ -23,7 +23,7 @@
                             <th>医生</th>
                             <th>科室</th>
                             <th>就诊时间</th>
-                            <th>状态</th>
+                            <th>状态</th> <!-- 这里把状态和操作合并显示 -->
                             <th>创建时间</th>
                         </tr>
                     </thead>
@@ -35,12 +35,27 @@
                                 <td>${a.deptName}</td>
                                 <td>${a.workDate} (${a.shiftType})</td>
                                 <td>
+                                    <!-- 修复后的逻辑 -->
                                     <c:choose>
-                                        <c:when test="${a.status == 0}"><span class="badge bg-success">预约成功</span>
-                                        </c:when>
-                                        <c:when test="${a.status == 1}"><span class="badge bg-secondary">已取消</span>
-                                        </c:when>
-                                        <c:otherwise>完成</c:otherwise>
+                                        <%-- 情况1：预约成功 (status=0) --%>
+                                            <c:when test="${a.status == 0}">
+                                                <span class="badge bg-success">预约成功</span>
+                                                <!-- 直接在这里放取消按钮，逻辑更顺畅 -->
+                                                <a href="patient?action=cancelAppointment&id=${a.id}"
+                                                    class="btn btn-sm btn-outline-danger ms-2"
+                                                    style="padding: 0px 5px; font-size: 12px;"
+                                                    onclick="return confirm('确定取消吗？')">取消</a>
+                                            </c:when>
+
+                                            <%-- 情况2：已取消 (status=1) --%>
+                                                <c:when test="${a.status == 1}">
+                                                    <span class="badge bg-secondary">已取消</span>
+                                                </c:when>
+
+                                                <%-- 其他情况：已完成 --%>
+                                                    <c:otherwise>
+                                                        <span class="badge bg-primary">已完成</span>
+                                                    </c:otherwise>
                                     </c:choose>
                                 </td>
                                 <td>${a.createTime}</td>

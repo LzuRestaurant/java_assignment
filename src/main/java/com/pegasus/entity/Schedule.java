@@ -11,5 +11,5 @@ public class Schedule {
     private String shiftType; // Morning/Afternoon
     private Integer maxSlots;
     private Integer usedSlots;
-    private Integer version;  // 乐观锁版本号
+    private Integer version;
 }

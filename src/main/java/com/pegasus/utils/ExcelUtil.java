@@ -13,18 +13,31 @@ import java.util.List;
 
 public class ExcelUtil {
 
-    /**
-     * 读取 Excel 并保存到数据库
-     */
     public static void readDoctorExcel(InputStream is) {
         EasyExcel.read(is, DoctorExcel.class, new ReadListener<DoctorExcel>() {
             private static final int BATCH_COUNT = 20;
             private List<Doctor> cacheList = new ArrayList<>();
             private DoctorDao doctorDao = new DoctorDao();
+            private int rowIndex = 1; // 记录行号，方便报错
 
             @Override
             public void invoke(DoctorExcel data, AnalysisContext context) {
-                // 转换 Excel对象 -> 实体对象
+                rowIndex++; // Excel第一行通常是表头，数据从第2行开始
+
+                // 【核心修改】调用校验逻辑
+                try {
+                    ValidatorUtil.validateDoctor(
+                            data.getId(),
+                            data.getName(),
+                            data.getPassword(),
+                            data.getDepartment(),
+                            data.getSpecialty());
+                } catch (IllegalArgumentException e) {
+                    // 捕获校验错误，包装成 RuntimeException 抛出，中断导入
+                    throw new RuntimeException("导入失败 (第 " + rowIndex + " 行): " + e.getMessage());
+                }
+
+                // 校验通过，转换对象
                 Doctor d = new Doctor();
                 d.setId(data.getId());
                 d.setName(data.getName());
@@ -41,19 +54,16 @@ public class ExcelUtil {
 
             @Override
             public void doAfterAllAnalysed(AnalysisContext context) {
-                saveData(); // 保存最后剩余的数据
+                saveData();
             }
 
             private void saveData() {
-                // 这里应该在 DoctorDao 加一个 batchInsert，或者循环插入
-                // 为简化，我们循环插入
                 for (Doctor d : cacheList) {
                     try {
-                        // 简单查重：如果存在则更新，不存在则插入 (这里偷懒直接插入，可能会报错)
-                        // 实际建议用 insert ignore 或 replace into
-                        doctorDao.insert(d); // 需在 DoctorDao 实现 insert 方法
+                        doctorDao.insert(d);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        // 可能是主键冲突等数据库错误
+                        throw new RuntimeException("数据库写入失败: 医生ID " + d.getId() + " 可能已存在");
                     }
                 }
                 cacheList.clear();

@@ -28,26 +28,35 @@
                                     <form action="${pageContext.request.contextPath}/auth" method="post">
                                         <input type="hidden" name="action" value="register">
 
+                                        <!-- 患者ID：10位数字 -->
                                         <div class="mb-3">
                                             <label>患者ID (10位数字)</label>
-                                            <input type="number" name="id" class="form-control" required
-                                                placeholder="例如：1000000002">
+                                            <input type="text" name="id" class="form-control" pattern="^\d{10}$"
+                                                title="必须是10位数字" required placeholder="例如：1000000001">
                                         </div>
+                                        <!-- 姓名：最多20字符 -->
                                         <div class="mb-3">
                                             <label>姓名</label>
-                                            <input type="text" name="name" class="form-control" required>
+                                            <input type="text" name="name" class="form-control" minlength="1"
+                                                maxlength="20" required>
                                         </div>
+                                        <!-- 密码：4-20位 -->
                                         <div class="mb-3">
                                             <label>密码</label>
-                                            <input type="password" name="password" class="form-control" required>
+                                            <input type="password" name="password" class="form-control" minlength="4"
+                                                maxlength="20" placeholder="4-20位字符" required>
                                         </div>
+                                        <!-- 身份证：18位数字 -->
                                         <div class="mb-3">
                                             <label>身份证号</label>
-                                            <input type="text" name="idCard" class="form-control" required>
+                                            <input type="text" name="idCard" class="form-control" pattern="^\d{18}$"
+                                                title="必须是18位数字" required>
                                         </div>
+                                        <!-- 手机号：11位数字 (手机号正则) -->
                                         <div class="mb-3">
                                             <label>手机号</label>
-                                            <input type="text" name="phone" class="form-control" required>
+                                            <input type="text" name="phone" class="form-control" pattern="^1[3-9]\d{9}$"
+                                                title="请输入有效的11位手机号" required>
                                         </div>
                                         <div class="mb-3">
                                             <label>性别</label>

@@ -20,4 +20,15 @@ public class PatientDao extends BasicDao<Patient> {
     public Long countById(Long id) {
          return (Long) queryScalar("SELECT count(*) FROM t_patient WHERE id = ?", id);
     }
+
+    // 统计总患者数
+    public Long countAll() {
+        return (Long) queryScalar("SELECT count(*) FROM t_patient");
+    }
+
+    // 更新患者信息 (ID和身份证不可修改)
+    public void updateInfo(Patient p) {
+        String sql = "UPDATE t_patient SET name=?, password=?, phone=?, gender=? WHERE id=?";
+        update(sql, p.getName(), p.getPassword(), p.getPhone(), p.getGender(), p.getId());
+    }
 }

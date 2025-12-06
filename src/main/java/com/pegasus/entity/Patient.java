@@ -3,8 +3,7 @@ package com.pegasus.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-// import java.time.LocalDateTime; // 删除这个
-import java.util.Date;           // 换成这个
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -16,5 +15,5 @@ public class Patient {
     private String idCard;
     private String phone;
     private String gender;
-    private Date createdAt; // 改为 java.util.Date (它能兼容 java.sql.Timestamp)
+    private Date createdAt;
 }

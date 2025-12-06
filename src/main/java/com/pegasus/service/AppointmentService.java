@@ -9,6 +9,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import com.pegasus.utils.AsyncTaskUtil;
 
 public class AppointmentService {
 
@@ -17,6 +18,7 @@ public class AppointmentService {
 
     /**
      * 执行预约操作
+     *
      * @return 预约成功生成的预约单号
      * @throws RuntimeException 如果预约失败，抛出异常消息
      */
@@ -24,12 +26,13 @@ public class AppointmentService {
         Connection conn = null;
         try {
             conn = DBUtil.getConnection();
-            // 1. 开启事务 (关键)
+            // 1. 开启事务
             conn.setAutoCommit(false);
 
             // 2. 检查排班是否存在
             Schedule schedule = scheduleDao.selectById(scheduleId);
-            if (schedule == null) throw new RuntimeException("排班不存在");
+            if (schedule == null)
+                throw new RuntimeException("排班不存在");
 
             // 3. 检查是否已满
             if (schedule.getUsedSlots() >= schedule.getMaxSlots()) {
@@ -41,7 +44,7 @@ public class AppointmentService {
                 throw new RuntimeException("您已预约过该时段，不可重复预约");
             }
 
-            // 5. 乐观锁扣减库存 (核心加分点)
+            // 5. 乐观锁扣减库存
             // 尝试更新，如果返回值是 0，说明刚才的一瞬间有人修改了数据（version变了），更新失败
             int rows = scheduleDao.decreaseStock(conn, scheduleId, schedule.getVersion());
             if (rows == 0) {
@@ -62,18 +65,30 @@ public class AppointmentService {
 
             // 7. 提交事务
             conn.commit();
+
+            // 8. 使用多线程发送通知
+            AsyncTaskUtil.sendSmsNotification("138xxxx", "您的预约已成功，预约号：" + appointmentId);
+
             return appointmentId;
 
         } catch (Exception e) {
             // 8. 回滚事务
             if (conn != null) {
-                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
             throw new RuntimeException(e.getMessage());
         } finally {
             // 9. 关闭连接
             if (conn != null) {
-                try { conn.close(); } catch (SQLException ex) { ex.printStackTrace(); }
+                try {
+                    conn.close();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

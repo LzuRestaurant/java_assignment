@@ -23,6 +23,7 @@ public class AdminServlet extends BaseServlet {
 
     private final DoctorDao doctorDao = new DoctorDao();
     private final AppointmentDao appointmentDao = new AppointmentDao();
+    private final com.pegasus.dao.PatientDao patientDao = new com.pegasus.dao.PatientDao();
 
     // 动作: listDoctors - 给 doctor_mgr.jsp 提供数据
     public void listDoctors(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -31,15 +32,10 @@ public class AdminServlet extends BaseServlet {
         req.getRequestDispatcher("/admin/doctor_mgr.jsp").forward(req, resp);
     }
 
-    /**
-     * 处理 Excel 导入请求
-     * URL: /admin?action=importExcel
-     * Method: POST
-     * Enctype: multipart/form-data
-     */
+    // 处理 Excel 导入
     public void importExcel(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            // 1. 获取上传的文件 Part (HTML input name="file")
+            // 1. 获取上传的文件
             Part filePart = req.getPart("file");
             if (filePart == null || filePart.getSize() == 0) {
                 req.setAttribute("msg", "请选择文件！");
@@ -47,11 +43,11 @@ public class AdminServlet extends BaseServlet {
                 return;
             }
 
-            // 2. 调用工具类读取并入库
+            // 2. 读取入库
             ExcelUtil.readDoctorExcel(filePart.getInputStream());
 
-            // 3. 成功反馈
-            req.setAttribute("msg", "批量导入成功！");
+            // 3. 反馈
+            req.setAttribute("msg", "导入成功！");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,10 +58,7 @@ public class AdminServlet extends BaseServlet {
         listDoctors(req, resp);
     }
 
-    /**
-     * 导出 PDF 报表
-     * URL: /admin?action=exportPdf
-     */
+    // 导出 PDF
     public void exportPdf(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // 1. 获取统计数据
         List<Map<String, Object>> statsData = appointmentDao.countByDepartment();
@@ -76,5 +69,16 @@ public class AdminServlet extends BaseServlet {
 
         // 3. 生成 PDF 并写入响应流
         PdfUtil.exportStatsPdf(resp.getOutputStream(), statsData);
+    }
+
+    // 准备首页数据
+    public void dashboard(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Long pCount = patientDao.countAll();
+        Long aCount = appointmentDao.countToday();
+
+        req.setAttribute("patientCount", pCount);
+        req.setAttribute("todayCount", aCount);
+
+        req.getRequestDispatcher("/admin/dashboard.jsp").forward(req, resp);
     }
 }

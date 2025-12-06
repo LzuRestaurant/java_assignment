@@ -25,25 +25,28 @@
                 <!-- 左侧菜单 -->
                 <div class="col-md-2">
                     <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action active">控制台</a>
-                        <a href="${pageContext.request.contextPath}/admin/doctor_mgr.jsp"
+                        <!-- 修改链接：指向 Servlet -->
+                        <a href="${pageContext.request.contextPath}/admin?action=dashboard"
+                            class="list-group-item list-group-item-action active">控制台</a>
+                        <a href="${pageContext.request.contextPath}/admin?action=listDoctors"
                             class="list-group-item list-group-item-action">医生与排班管理</a>
-                        <a href="${pageContext.request.contextPath}/admin/stats.jsp"
-                            class="list-group-item list-group-item-action">统计报表</a>
+                        <a href="${pageContext.request.contextPath}/admin?action=exportPdf" target="_blank"
+                            class="list-group-item list-group-item-action">下载报表</a>
                     </div>
                 </div>
 
                 <!-- 右侧内容 -->
                 <div class="col-md-10">
                     <div class="alert alert-info">
-                        欢迎回来，管理员！今天是 <%= new java.util.Date() %>
+                        欢迎回来，管理员！现在是 <%= new java.util.Date() %>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="card text-white bg-primary mb-3">
                                 <div class="card-header">总患者数</div>
                                 <div class="card-body">
-                                    <h5 class="card-title">1,204 人</h5>
+                                    <!-- 使用 EL 表达式 -->
+                                    <h5 class="card-title">${patientCount} 人</h5>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +54,8 @@
                             <div class="card text-white bg-success mb-3">
                                 <div class="card-header">今日预约</div>
                                 <div class="card-body">
-                                    <h5 class="card-title">45 单</h5>
+                                    <!-- 使用 EL 表达式 -->
+                                    <h5 class="card-title">${todayCount} 单</h5>
                                 </div>
                             </div>
                         </div>

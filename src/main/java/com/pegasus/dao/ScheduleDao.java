@@ -9,7 +9,7 @@ public class ScheduleDao extends BasicDao<Schedule> {
         super(Schedule.class);
     }
 
-    // 不要写 SELECT *，要把字段映射写清楚
+    // 不能写 SELECT *
     private static final String SELECT_ALL_FIELDS = "SELECT id, doctor_id AS doctorId, work_date AS workDate, " +
             "shift_type AS shiftType, max_slots AS maxSlots, " +
             "used_slots AS usedSlots, version FROM t_schedule ";

@@ -50,4 +50,9 @@ public class AppointmentDao extends BasicDao<Appointment> {
             throw new RuntimeException(e);
         }
     }
+
+    // 统计今日预约数
+    public Long countToday() {
+        return (Long) queryScalar("SELECT count(*) FROM t_appointment WHERE DATE(create_time) = CURDATE()");
+    }
 }

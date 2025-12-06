@@ -13,7 +13,7 @@ public abstract class BaseServlet extends HttpServlet {
         // 解决 POST 请求中文乱码
         req.setCharacterEncoding("UTF-8");
 
-        // 获取 action 参数，例如: register
+        // 获取 action 参数
         String action = req.getParameter("action");
         if (action == null) {
             resp.sendError(400, "Missing action parameter");

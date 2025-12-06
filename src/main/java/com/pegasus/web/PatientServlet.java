@@ -3,6 +3,7 @@ package com.pegasus.web;
 import com.pegasus.dao.AppointmentDao;
 import com.pegasus.dao.DoctorDao;
 import com.pegasus.dao.ScheduleDao;
+import com.pegasus.dao.PatientDao;
 import com.pegasus.entity.Appointment;
 import com.pegasus.entity.Doctor;
 import com.pegasus.entity.Patient;
@@ -24,6 +25,7 @@ public class PatientServlet extends BaseServlet {
     private final ScheduleDao scheduleDao = new ScheduleDao();
     private final AppointmentService appointmentService = new AppointmentService(); // 引入 Service
     private final AppointmentDao appointmentDao = new AppointmentDao();
+    private final PatientDao patientDao = new PatientDao();
 
     // 对应 /patient?action=listDoctors
     public void listDoctors(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -53,7 +55,7 @@ public class PatientServlet extends BaseServlet {
         req.getRequestDispatcher("/patient/my_appointments.jsp").forward(req, resp);
     }
 
-    // 动作: preBook - 展示医生排班
+    // 展示医生排班
     public void preBook(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String doctorIdStr = req.getParameter("doctorId");
         if (doctorIdStr == null) {
@@ -70,7 +72,7 @@ public class PatientServlet extends BaseServlet {
         req.getRequestDispatcher("/patient/schedule_pick.jsp").forward(req, resp);
     }
 
-    // 动作: confirmBook - 提交预约
+    // 提交预约
     public void confirmBook(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             // 获取当前登录用户
@@ -96,5 +98,53 @@ public class PatientServlet extends BaseServlet {
             // 重新加载排班页
             preBook(req, resp);
         }
+    }
+
+    public void cancelAppointment(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String idStr = req.getParameter("id"); // 预约单号
+        if (idStr != null) {
+            Long appId = Long.parseLong(idStr);
+            String sql = "UPDATE t_appointment SET status = 1 WHERE id = ?";
+            new com.pegasus.dao.AppointmentDao().update(sql, appId);
+        }
+        // 刷新列表
+        resp.sendRedirect("patient?action=myAppointments");
+    }
+
+    // 跳转到个人信息页
+    public void viewProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 直接转发到 JSP，因为数据都在 Session (currentUser) 里了
+        Patient sessionUser = (Patient) req.getSession().getAttribute("currentUser");
+        Patient p = patientDao.selectById(sessionUser.getId());
+        req.setAttribute("p", p);
+        req.getRequestDispatcher("/patient/profile.jsp").forward(req, resp);
+    }
+
+    // 提交修改
+    public void updateProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Patient user = (Patient) req.getSession().getAttribute("currentUser");
+
+        // 1. 接收参数
+        String name = req.getParameter("name");
+        String password = req.getParameter("password");
+        String phone = req.getParameter("phone");
+        String gender = req.getParameter("gender");
+
+        // 2. 更新对象
+        user.setName(name);
+        user.setPassword(password);
+        user.setPhone(phone);
+        user.setGender(gender);
+
+        // 3. 更新数据库
+        patientDao.updateInfo(user);
+
+        // 4. 更新 Session (否则页面显示的还是旧名字)
+        req.getSession().setAttribute("currentUser", user);
+
+        // 5. 提示并跳转
+        req.setAttribute("msg", "信息修改成功！");
+        req.setAttribute("p", user);
+        req.getRequestDispatcher("/patient/profile.jsp").forward(req, resp);
     }
 }

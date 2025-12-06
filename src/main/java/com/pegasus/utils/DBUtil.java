@@ -31,6 +31,7 @@ public class DBUtil {
             dataSource = new HikariDataSource(config);
         } catch (Exception e) {
             e.printStackTrace();
+            // 写在配置文件中，一般这个项目跑不起来都是数据库的问题
             throw new RuntimeException("数据库连接池初始化失败", e);
         }
     }

@@ -26,12 +26,9 @@ public class DoctorDao extends BasicDao<Doctor> {
         update(sql, d.getId(), d.getName(), d.getPassword(), d.getDepartment(), d.getSpecialty());
     }
 
-    // 获取所有科室列表 (去重)
+    // 获取所有科室列表
     public List<String> findAllDepartments() {
-        // 这里 BasicDao 需要稍微扩充一下泛型支持，或者直接用 queryRunner
-        // 为了简单，我们这里临时用 Object 接收
-        // 实际建议在 BasicDao 加一个 queryColumnList 方法，这里先简化处理：
-        // 如果这一步报错，可以先返回 null，后面教你补全
+        // 为了简单，临时用 Object 接收
         return null;
     }
 }
