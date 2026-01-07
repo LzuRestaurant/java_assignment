@@ -1,5 +1,7 @@
 # 飞马星球医院预约挂号微系统
 
+[TOC]
+
 ## 一、 小组主要成员与分工
 
 | 姓名 | 角色 | 权重 |
@@ -16,7 +18,7 @@
 
 系统主要包含两大角色：
 1.  **患者端**：支持注册/登录、科室查询、医生查询、在线预约、取消预约、个人信息管理。
-2.  **管理端**：支持批量导入医生排班（Excel、生成月度统计报表（PDF）、医生信息管理。
+2.  **管理端**：支持批量导入医生排班（Excel）、生成月度统计报表（PDF）、医生信息管理。
 
 ---
 
@@ -64,26 +66,26 @@
 
 | 项目 | 说明 |
 | :--- | :--- |
-| **服务器 OS** | Ubuntu 24.04 LTS Server |
+| **服务器 OS** | Ubuntu 24.04 LTS Server(基于华为云) |
 | **部署方式** | WAR 包部署 (`PegasusHospital-1.0.war`) |
 
 ### 六、 项目目录结构说明
 
 ```text
 PegasusHospital/
-├── pom.xml                     # Maven 项目配置文件 (依赖管理)
+├── pom.xml                     # Maven 项目配置文件
 ├── README.md                   # 项目说明文档
 ├── src/
 │   └── main/
 │       ├── java/               # Java 源代码目录
 │       │   └── com/
 │       │       └── pegasus/
-│       │           ├── entity/         # [模型层] 数据库实体类 (Lombok)
+│       │           ├── entity/         # [模型层] 数据库实体类
 │       │           │   ├── Admin.java          # 管理员实体
 │       │           │   ├── Appointment.java    # 预约记录实体
 │       │           │   ├── Doctor.java         # 医生实体
 │       │           │   ├── Patient.java        # 患者实体
-│       │           │   ├── Schedule.java       # 排班实体 (含乐观锁 version)
+│       │           │   ├── Schedule.java       # 排班实体
 │       │           │   └── excel/
 │       │           │       └── DoctorExcel.java # EasyExcel 导入模型
 │       │           │
@@ -106,7 +108,7 @@ PegasusHospital/
 │       │           │
 │       │           ├── filter/         # [过滤器]
 │       │           │   ├── EncodingFilter.java # 全局 UTF-8 编码过滤
-│       │           │   └── LoginFilter.java    # 权限拦截 (未登录禁止访问后台)
+│       │           │   └── LoginFilter.java    # 权限拦截
 │       │           │
 │       │           └── utils/          # [工具类]
 │       │               ├── DBUtil.java         # HikariCP 数据库连接池工具
@@ -214,7 +216,7 @@ exit;
 
 ```bash
 # 导入表结构和测试数据
-mariadb -uroot -proot pegasus_hospital < database.sql
+mariadb -uroot -proot pegasus_hospital < src/main/resources/database.sql
 ```
 
 ---
@@ -229,7 +231,7 @@ sudo apt install tomcat10 -y
 2. 部署 WAR 包
 ```bash
 # 1. 重命名为ROOT.war
-mv PegasusHospital-1.0.war ROOT.war
+cp target/PegasusHospital-1.0.war ROOT.war
 
 # 2. 删除 Tomcat 默认的主页
 sudo rm -rf /var/lib/tomcat10/webapps/ROOT
